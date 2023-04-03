@@ -13,7 +13,7 @@
     ],
     "description": "Example description.",
     "price": 99.99
-}
+     }
     @GetMapping("/list10") - метод который вытаскивает первые n объявление, число n можно изменить в сервисе, 27 строка полe size(по дефолту стоит 6)
     для проверки сортировки использовать http://localhost:2020/announcements/list10?sortBy=price&sortOrder=DESC&page=0&size=10
     
