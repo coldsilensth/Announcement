@@ -1,10 +1,12 @@
 package com.example.announcementProject.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Size;
 
@@ -26,12 +28,14 @@ public class AnnouncementDTO {
     private String description;
 
     public void setDescription(String description){
-        if(description.length() > 5000){
+        if(description.length() > 1000){
             throw new ValidationException("desc 1000 character limit");
         }
         this.description = description;
     }
-    @Size(min = 1, max = 3, message = "no more than 3 links\n")
+
+    @Valid
+    @Size(max = 3, message = "no more than 3 links\n")
     private List<String> photos = new ArrayList<>();
     private int price;
 
