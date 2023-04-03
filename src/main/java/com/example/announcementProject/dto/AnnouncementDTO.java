@@ -24,7 +24,7 @@ public class AnnouncementDTO {
         this.title = title;
     }
 
-    @Size(max = 500 , message = "description 1000 character limit\n")
+    @Size(max = 1000 , message = "description 1000 character limit\n")
     private String description;
 
     public void setDescription(String description){
