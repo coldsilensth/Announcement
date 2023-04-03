@@ -18,10 +18,10 @@
     @GetMapping("/list10") - метод который вытаскивает первые n объявление, число n можно изменить в сервисе, 28 строка полe size(по дефолту стоит 6)
     для проверки сортировки использовать http://localhost:2020/announcements/list10?sortBy=price&sortOrder=DESC
     
-    sortBy - что сортировать(price или createdAt) по дефолту стоит создание
+    sortBy - что сортировать(price или createdAt) по дефолту стоит создание(время)
     sortOrder - как сортировать(asc - возрастание, desc - убывание)
     
-    @GetMapping("/{id}") - метод по иска по айди, вытаскивает название объявления, цена, ссылку на главное фото(первое фото) и desc - null
+    @GetMapping("/{id}") - метод поиска по айди, вытаскивает название объявления, цена, ссылку на главное фото(первое фото) и desc - null
     
     опциональные поля. можно вытащить все ссылки на фото, добавив ?allPhotos=true или полное описание allDescription=true
     все вместе http://localhost:2020/announcements/2?allPhotos=true&allDescription=true
