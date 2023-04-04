@@ -4,10 +4,10 @@ import com.example.announcementProject.dto.AnnouncementDTO;
 import com.example.announcementProject.entity.Announcement;
 import com.example.announcementProject.repository.AnnouncementRepo;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
@@ -19,13 +19,16 @@ import java.util.Optional;
 
 @Service
 public class AnnouncementService {
-    @Autowired
-    private AnnouncementService announcementService;
-    @Autowired
-    private AnnouncementRepo announcementRepo;
 
-    public List<AnnouncementDTO> getListAnonnouncement(int page, String sortBy, String sortOrder) {
-        PageRequest pageRequest = PageRequest.of(0, 6, Sort.by(Sort.Direction.fromString(sortOrder), sortBy));
+    private AnnouncementRepo announcementRepo;
+    private final int SIZE = 6;
+
+    public AnnouncementService(AnnouncementRepo announcementRepo) {
+        this.announcementRepo = announcementRepo;
+    }
+
+    public ResponseEntity<List<AnnouncementDTO>> getListAnnouncement(String sortBy, String sortOrder) {
+        PageRequest pageRequest = PageRequest.of(0, SIZE, Sort.by(Sort.Direction.fromString(sortOrder), sortBy));
         Page<Announcement> announcementPage = announcementRepo.findAll(pageRequest);
         List<Announcement> announcements = announcementPage.getContent();
         List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
@@ -42,12 +45,11 @@ public class AnnouncementService {
             announcement.setCreatedAt(LocalDateTime.now());
             announcementDTOS.add(announcementDTO);
         }
-        return announcementDTOS;
+        return ResponseEntity.ok(announcementDTOS);
     }
 
     public Announcement createAnnouncements(AnnouncementDTO announcementDTO) throws ValidationException{
         validatePhotosCount(announcementDTO.getPhotos());
-
         Announcement announcement = new Announcement();
         announcement.setTitle(announcementDTO.getTitle());
         announcement.setPhotos(announcementDTO.getPhotos());
@@ -57,12 +59,12 @@ public class AnnouncementService {
         return announcementRepo.save(announcement);
     }
 
-
     public void validatePhotosCount(List<String> photos){
         if (photos.size() > 3){
             throw new ValidationException("Можно добавить только 3 ссылки");
         }
     }
+
     public AnnouncementDTO getAnnouncementById(Long id, boolean allDescription, boolean allPhotos){
         Optional<Announcement> announcementOptional = announcementRepo.findById(id);
 
@@ -87,6 +89,7 @@ public class AnnouncementService {
         }
         return null;
     }
+
     public Announcement updateAnnouncement(Long id, AnnouncementDTO announcementDTO){
         Optional<Announcement> announcementOptional = announcementRepo.findById(id);
         if(announcementOptional.isPresent()){

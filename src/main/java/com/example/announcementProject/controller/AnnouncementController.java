@@ -2,11 +2,7 @@ package com.example.announcementProject.controller;
 
 import com.example.announcementProject.dto.AnnouncementDTO;
 import com.example.announcementProject.entity.Announcement;
-import com.example.announcementProject.repository.AnnouncementRepo;
 import com.example.announcementProject.service.AnnouncementService;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,26 +10,25 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/announcements")
-
 @RestController
 public class AnnouncementController {
-    @Autowired
-    private AnnouncementService announcementService;
-    @Autowired
-    private AnnouncementRepo announcementRepo;
 
-    @GetMapping("/list10")
-    public List<AnnouncementDTO> getAllAnnouncements(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "createdAt") String sortBy,
-                                                     @RequestParam(defaultValue = "desc") String sortOrder) {
-        return announcementService.getListAnonnouncement(page, sortBy, sortOrder);
+    private AnnouncementService announcementService;
+
+    public AnnouncementController(AnnouncementService announcementService) {
+        this.announcementService = announcementService;
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<AnnouncementDTO>> getAllAnnouncements(@RequestParam(defaultValue = "createdAt") String sortBy,
+                                                     @RequestParam(defaultValue = "desc") String sortOrder) {
+        return announcementService.getListAnnouncement(sortBy, sortOrder);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AnnouncementDTO> getAnnouncementById(@PathVariable Long id,
                                                                @RequestParam(defaultValue = "false") boolean allDescription,
@@ -47,9 +42,9 @@ public class AnnouncementController {
         }
 
     }
+
     @PostMapping("/create")
     public ResponseEntity<?> createAnnouncements(@Valid @RequestBody AnnouncementDTO announcementDTO, BindingResult result) {
-
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
             for (FieldError error : result.getFieldErrors()) {
